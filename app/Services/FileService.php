@@ -12,7 +12,7 @@ class FileService
     }
 
 
-    public function getUrl($path) // Method for retrieving file URL
+    public function getUrl($path) 
     {
         return Storage::url($path);
     }

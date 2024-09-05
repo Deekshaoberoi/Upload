@@ -1,10 +1,11 @@
 <?php
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Imports\RecordsImport;
 use App\Models\Upload_Files;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UploadFilesController extends Controller
 {
@@ -16,7 +17,7 @@ class UploadFilesController extends Controller
     public function upload(Request $request)
     {
         $request->validate([
-            'file' => 'required|file|max:2048000', // file size
+            'file' => 'required|file|max:2048000', //file size
         ]);
 
         $user = Auth::user();
@@ -24,13 +25,16 @@ class UploadFilesController extends Controller
         $fileName = time() . '.' . $file->getClientOriginalExtension();
         $filePath = $file->storeAs('uploads', $fileName);
 
-        Upload_Files::create([
+
+        $uploadFile = Upload_Files::create([
             'user_id' => $user->id,
             'file_name' => $fileName,
             'file_path' => $filePath,
             'file_size' => $file->getSize(),
         ]);
 
-        return back()->with('success', 'File uploaded successfully');
+        Excel::import(new RecordsImport($uploadFile->id), storage_path('app/' . $filePath));
+
+        return back()->with('success', 'File uploaded and records processed successfully');
     }
 }

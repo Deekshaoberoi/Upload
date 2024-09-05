@@ -17,4 +17,9 @@ class Upload_Files extends Model
     ];
 
     use HasFactory;
+    
+    public function records()
+    {
+        return $this->hasMany(Record::class, 'upload_file_id');
+    }
 }
