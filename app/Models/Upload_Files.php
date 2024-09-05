@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Upload_Files extends Model
 {
     protected $table = 'upload_files';
-    
+
     protected $fillable = [
         'user_id',
         'file_name',
